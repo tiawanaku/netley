@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Clientes\Schemas;
 
+use App\Models\Cliente;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -83,6 +84,23 @@ class ClienteForm
                             ->label('Fecha de inicio'),
                         Toggle::make('es_preferente')
                             ->label('Cliente ejecutivo')
+                            ->helperText('Se activa automáticamente al registrar el primer pago (CU-006).')
+                            ->disabled()
+                            ->columnSpanFull(),
+                        Select::make('rol_empresa')
+                            ->label('Rol en la empresa')
+                            ->placeholder('Ninguno (es solo cliente)')
+                            ->options([
+                                'Abogado' => 'Abogado',
+                                'Psicólogo' => 'Psicólogo',
+                                'Procurador' => 'Procurador',
+                                'Trabajo Social' => 'Trabajo Social',
+                                'Pasante' => 'Pasante',
+                                'Otros' => 'Otros',
+                            ])
+                            ->helperText(fn (?Cliente $record) => $record?->user_id
+                                ? 'Ya tiene usuario para entrar al panel.'
+                                : 'Al guardar con un rol seleccionado se genera automáticamente su usuario y contraseña.')
                             ->columnSpanFull(),
                         FileUpload::make('foto')
                             ->image()

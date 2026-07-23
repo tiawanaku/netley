@@ -39,6 +39,14 @@ class ClientesTable
                 IconColumn::make('es_preferente')
                     ->label('Ejecutivo')
                     ->boolean(),
+                TextColumn::make('rol_empresa')
+                    ->label('Rol en la empresa')
+                    ->badge()
+                    ->placeholder('—'),
+                IconColumn::make('user_id')
+                    ->label('Acceso al panel')
+                    ->boolean()
+                    ->getStateUsing(fn ($record) => filled($record->user_id)),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
