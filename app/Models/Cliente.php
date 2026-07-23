@@ -28,4 +28,9 @@ class Cliente extends Model
     {
         return $this->hasMany(Consulta::class);
     }
+
+    public function citas(): HasMany
+    {
+        return $this->hasMany(Cita::class);
+    }
 }
