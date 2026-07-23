@@ -11,9 +11,25 @@ class Cliente extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'nombre',
-        'email',
+        'nombres',
+        'apellido_paterno',
+        'apellido_materno',
+        'ci',
+        'genero',
+        'fecha_nacimiento',
+        'nacionalidad',
+        'estado_civil',
+        'profesion',
+        'direccion',
+        'ciudad',
         'telefono',
+        'whatsapp',
+        'correo',
+        'numero_contrato',
+        'estado',
+        'foto',
+        'nota_netley',
+        'fecha_de_inicio',
         'es_preferente',
     ];
 
@@ -21,7 +37,14 @@ class Cliente extends Model
     {
         return [
             'es_preferente' => 'boolean',
+            'fecha_nacimiento' => 'date',
+            'fecha_de_inicio' => 'date',
         ];
+    }
+
+    public function getNombreCompletoAttribute(): string
+    {
+        return trim("{$this->nombres} {$this->apellido_paterno} {$this->apellido_materno}");
     }
 
     public function consultas(): HasMany

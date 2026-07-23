@@ -15,7 +15,7 @@ class CitasTable
         return $table
             ->defaultSort('fecha_hora')
             ->columns([
-                TextColumn::make('cliente.nombre')
+                TextColumn::make('cliente.nombres')
                     ->label('Cliente')
                     ->searchable(),
                 TextColumn::make('fecha_hora')

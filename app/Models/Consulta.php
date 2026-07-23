@@ -17,7 +17,11 @@ class Consulta extends Model
         'email',
         'telefono',
         'descripcion',
+        'tipo_proceso',
         'origen',
+        'forma_ingreso',
+        'colegio_u_otro',
+        'ciudad',
     ];
 
     protected static function booted(): void

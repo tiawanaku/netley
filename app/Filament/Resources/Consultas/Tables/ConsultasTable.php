@@ -18,7 +18,7 @@ class ConsultasTable
         return $table
             ->defaultSort('created_at')
             ->columns([
-                TextColumn::make('cliente.nombre')
+                TextColumn::make('cliente.nombres')
                     ->label('Cliente')
                     ->searchable(),
                 TextColumn::make('email')
@@ -27,6 +27,15 @@ class ConsultasTable
                 TextColumn::make('telefono')
                     ->label('Teléfono')
                     ->searchable(),
+                TextColumn::make('ciudad')
+                    ->toggleable(),
+                TextColumn::make('tipo_proceso')
+                    ->label('Tipo de proceso')
+                    ->toggleable(),
+                TextColumn::make('forma_ingreso')
+                    ->label('Forma de ingreso')
+                    ->badge()
+                    ->toggleable(),
                 TextColumn::make('origen')
                     ->badge(),
                 TextColumn::make('ticket.estado')

@@ -23,6 +23,9 @@ class ConsultaForm
                     ->label('Teléfono')
                     ->tel()
                     ->required(),
+                TextInput::make('ciudad'),
+                TextInput::make('tipo_proceso')
+                    ->label('Tipo de proceso'),
                 Textarea::make('descripcion')
                     ->label('Descripción de la consulta')
                     ->default(null)
@@ -36,6 +39,19 @@ class ConsultaForm
                     ])
                     ->default('landing')
                     ->required(),
+                Select::make('forma_ingreso')
+                    ->label('Forma de ingreso')
+                    ->options([
+                        'Netley' => 'Netley',
+                        'Social' => 'Social',
+                        'Psicología' => 'Psicología',
+                        'Taller' => 'Taller',
+                        'Otros' => 'Otros',
+                    ])
+                    ->default('Netley')
+                    ->required(),
+                TextInput::make('colegio_u_otro')
+                    ->label('Colegio / Otros'),
             ]);
     }
 }

@@ -17,8 +17,8 @@ class CreateConsulta extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $cliente = Cliente::firstOrCreate(
-            ['email' => $data['email']],
-            ['nombre' => $data['nombre'], 'telefono' => $data['telefono']],
+            ['correo' => $data['email']],
+            ['nombres' => $data['nombre'], 'telefono' => $data['telefono']],
         );
 
         $data['cliente_id'] = $cliente->id;

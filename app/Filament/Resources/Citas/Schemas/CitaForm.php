@@ -15,7 +15,7 @@ class CitaForm
             ->components([
                 Select::make('cliente_id')
                     ->label('Cliente')
-                    ->relationship('cliente', 'nombre')
+                    ->relationship('cliente', 'nombres')
                     ->searchable()
                     ->required(),
                 Select::make('consulta_id')

@@ -18,14 +18,26 @@ class ClientesTable
     {
         return $table
             ->columns([
-                TextColumn::make('nombre')
+                TextColumn::make('nombres')
                     ->searchable(),
-                TextColumn::make('email')
-                    ->label('Email address')
+                TextColumn::make('apellido_paterno')
+                    ->label('Ap. paterno')
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('ci')
+                    ->label('C.I.')
+                    ->searchable(),
+                TextColumn::make('correo')
+                    ->label('Correo')
                     ->searchable(),
                 TextColumn::make('telefono')
                     ->searchable(),
+                TextColumn::make('ciudad')
+                    ->toggleable(),
+                TextColumn::make('estado')
+                    ->badge(),
                 IconColumn::make('es_preferente')
+                    ->label('Preferente')
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
