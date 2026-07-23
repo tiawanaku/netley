@@ -37,7 +37,7 @@ class ClientesTable
                 TextColumn::make('estado')
                     ->badge(),
                 IconColumn::make('es_preferente')
-                    ->label('Preferente')
+                    ->label('Ejecutivo')
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()

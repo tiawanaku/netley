@@ -14,6 +14,14 @@ class Cita extends Model
         'modalidad',
         'estado',
         'notas',
+        // CU-005 Registrar Resultado de la Cita
+        'diagnostico_preliminar',
+        'tipo_servicio',
+        'observaciones',
+        'costo',
+        'riesgo',
+        'recomendaciones',
+        'deriva_a',
     ];
 
     protected function casts(): array

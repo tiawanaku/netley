@@ -56,4 +56,14 @@ class Cliente extends Model
     {
         return $this->hasMany(Cita::class);
     }
+
+    public function pagos(): HasMany
+    {
+        return $this->hasMany(Pago::class);
+    }
+
+    public function casos(): HasMany
+    {
+        return $this->hasMany(Caso::class);
+    }
 }

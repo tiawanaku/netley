@@ -82,7 +82,7 @@ class ClienteForm
                         DatePicker::make('fecha_de_inicio')
                             ->label('Fecha de inicio'),
                         Toggle::make('es_preferente')
-                            ->label('Cliente preferente')
+                            ->label('Cliente ejecutivo')
                             ->columnSpanFull(),
                         FileUpload::make('foto')
                             ->image()
