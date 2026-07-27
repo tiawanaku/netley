@@ -14,6 +14,8 @@ class Consulta extends Model
     protected $fillable = [
         'cliente_id',
         'nombre',
+        'apellido_paterno',
+        'apellido_materno',
         'email',
         'telefono',
         'descripcion',

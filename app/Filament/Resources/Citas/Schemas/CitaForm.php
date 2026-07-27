@@ -14,64 +14,84 @@ class CitaForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->components([
+            ->components(self::components());
+    }
+
+    /**
+     * @param  bool  $incluirCliente  false cuando este formulario se embebe en el wizard de Crear
+     *                                 Consulta: ahí el cliente ya se elige en el paso "Consulta" y la
+     *                                 cita se registra automáticamente para ese mismo cliente, sin
+     *                                 volver a preguntarlo (el valor de 'cliente_id' ya viaja en el
+     *                                 estado compartido del wizard).
+     * @param  bool  $incluirConsultaRelacionada  false cuando este formulario se embebe en el wizard de
+     *                                             Crear Consulta: ahí la cita siempre queda ligada a la
+     *                                             consulta recién creada, así que el selector de una
+     *                                             consulta existente no aplica.
+     */
+    public static function components(bool $incluirCliente = true, bool $incluirConsultaRelacionada = true): array
+    {
+        return [
+            ...($incluirCliente ? [
                 Select::make('cliente_id')
                     ->label('Cliente')
                     ->relationship('cliente', 'nombres')
                     ->searchable()
                     ->required(),
+            ] : []),
+            ...($incluirConsultaRelacionada ? [
                 Select::make('consulta_id')
                     ->label('Consulta relacionada')
                     ->relationship('consulta', 'nombre')
                     ->searchable()
                     ->default(null),
-                DateTimePicker::make('fecha_hora')
-                    ->label('Fecha y hora')
-                    ->required(),
-                Select::make('modalidad')
-                    ->options(['Presencial' => 'Presencial', 'Virtual' => 'Virtual'])
-                    ->required(),
-                Select::make('estado')
-                    ->options([
-                        'Pendiente' => 'Pendiente',
-                        'Confirmada' => 'Confirmada',
-                        'Cancelada' => 'Cancelada',
-                        'Reagendada' => 'Reagendada',
-                        'Realizada' => 'Realizada',
-                    ])
-                    ->default('Pendiente')
-                    ->required(),
-                Textarea::make('notas')
-                    ->default(null)
-                    ->columnSpanFull(),
-                // CU-005 Registrar Resultado de la Cita (lo llena el abogado tras la reunión)
-                Section::make('Resultado de la cita')
-                    ->columns(2)
-                    ->collapsed()
-                    ->schema([
-                        Textarea::make('diagnostico_preliminar')
-                            ->label('Diagnóstico preliminar')
-                            ->columnSpanFull(),
-                        TextInput::make('tipo_servicio')
-                            ->label('Tipo de servicio requerido'),
-                        TextInput::make('costo')
-                            ->label('Costo (Bs.)')
-                            ->numeric(),
-                        Select::make('riesgo')
-                            ->options(['Bajo' => 'Bajo', 'Medio' => 'Medio', 'Alto' => 'Alto']),
-                        Select::make('deriva_a')
-                            ->label('Deriva a')
-                            ->options([
-                                'Legal' => 'Legal',
-                                'Psicología' => 'Psicología',
-                                'Conciliación' => 'Conciliación',
-                                'Otro' => 'Otro',
-                            ]),
-                        Textarea::make('recomendaciones')
-                            ->columnSpanFull(),
-                        Textarea::make('observaciones')
-                            ->columnSpanFull(),
-                    ]),
-            ]);
+            ] : []),
+            DateTimePicker::make('fecha_hora')
+                ->label('Fecha y hora')
+                ->required(),
+            Select::make('modalidad')
+                ->options(['Presencial' => 'Presencial', 'Virtual' => 'Virtual'])
+                ->required(),
+            Select::make('estado')
+                ->options([
+                    'Pendiente' => 'Pendiente',
+                    'Confirmada' => 'Confirmada',
+                    'Cancelada' => 'Cancelada',
+                    'Reagendada' => 'Reagendada',
+                    'Realizada' => 'Realizada',
+                ])
+                ->default('Pendiente')
+                ->required(),
+            Textarea::make('notas')
+                ->default(null)
+                ->columnSpanFull(),
+            // CU-005 Registrar Resultado de la Cita (lo llena el abogado tras la reunión)
+            Section::make('Resultado de la cita')
+                ->columns(2)
+                ->collapsed()
+                ->schema([
+                    Textarea::make('diagnostico_preliminar')
+                        ->label('Diagnóstico preliminar')
+                        ->columnSpanFull(),
+                    TextInput::make('tipo_servicio')
+                        ->label('Tipo de servicio requerido'),
+                    TextInput::make('costo')
+                        ->label('Costo (Bs.)')
+                        ->numeric(),
+                    Select::make('riesgo')
+                        ->options(['Bajo' => 'Bajo', 'Medio' => 'Medio', 'Alto' => 'Alto']),
+                    Select::make('deriva_a')
+                        ->label('Deriva a')
+                        ->options([
+                            'Legal' => 'Legal',
+                            'Psicología' => 'Psicología',
+                            'Conciliación' => 'Conciliación',
+                            'Otro' => 'Otro',
+                        ]),
+                    Textarea::make('recomendaciones')
+                        ->columnSpanFull(),
+                    Textarea::make('observaciones')
+                        ->columnSpanFull(),
+                ]),
+        ];
     }
 }

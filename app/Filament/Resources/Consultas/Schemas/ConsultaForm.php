@@ -12,7 +12,12 @@ class ConsultaForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->components([
+            ->components(self::components());
+    }
+
+    public static function components(): array
+    {
+        return [
                 TextInput::make('nombre')
                     ->required(),
                 TextInput::make('apellido_paterno')
@@ -56,6 +61,6 @@ class ConsultaForm
                     ->required(),
                 TextInput::make('colegio_u_otro')
                     ->label('Colegio / Otros'),
-            ]);
+        ];
     }
 }
