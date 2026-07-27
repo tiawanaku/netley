@@ -15,6 +15,10 @@ class ConsultaForm
             ->components([
                 TextInput::make('nombre')
                     ->required(),
+                TextInput::make('apellido_paterno')
+                    ->required(),
+                TextInput::make('apellido_materno')
+                    ->required(),
                 TextInput::make('email')
                     ->label('Correo electrónico')
                     ->email()
@@ -27,7 +31,7 @@ class ConsultaForm
                 TextInput::make('tipo_proceso')
                     ->label('Tipo de proceso'),
                 Textarea::make('descripcion')
-                    ->label('Descripción de la consulta')
+                    ->label('Tema a tratar')
                     ->default(null)
                     ->columnSpanFull(),
                 Select::make('origen')

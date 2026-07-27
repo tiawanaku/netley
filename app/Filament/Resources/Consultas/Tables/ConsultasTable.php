@@ -16,30 +16,32 @@ class ConsultasTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->defaultSort('created_at')
+            ->defaultSort('created_at', 'desc') // Orden descendente por fecha
             ->columns([
+                TextColumn::make('created_at')
+                    ->label('Fecha de consulta')
+                    ->dateTime()
+                    ->sortable()
+                    ->searchable(), // Añadido searchable para poder buscar por fecha
+                
                 TextColumn::make('cliente.nombres')
-                    ->label('Cliente')
+                    ->label('Nombre')
                     ->searchable(),
-                TextColumn::make('email')
-                    ->label('Correo')
-                    ->searchable(),
+                
                 TextColumn::make('telefono')
                     ->label('Teléfono')
                     ->searchable(),
+                
                 TextColumn::make('ciudad')
+                    ->label('Ciudad')
                     ->toggleable(),
+                
                 TextColumn::make('tipo_proceso')
                     ->label('Tipo de proceso')
                     ->toggleable(),
-                TextColumn::make('forma_ingreso')
-                    ->label('Forma de ingreso')
-                    ->badge()
-                    ->toggleable(),
-                TextColumn::make('origen')
-                    ->badge(),
+                
                 TextColumn::make('ticket.estado')
-                    ->label('Estado del ticket')
+                    ->label('Estado')
                     ->badge()
                     ->color(fn (?string $state) => match ($state) {
                         'Pendiente' => 'warning',
@@ -47,17 +49,31 @@ class ConsultasTable
                         'Cerrado' => 'success',
                         default => 'gray',
                     }),
+                
                 TextColumn::make('ticket.asignadoA.name')
                     ->label('Asignado a')
                     ->placeholder('Sin asignar'),
-                TextColumn::make('created_at')
-                    ->label('Ingresó')
-                    ->dateTime()
-                    ->sortable(),
+                
+                // Columnas ocultas por defecto pero disponibles para toggle
+                TextColumn::make('email')
+                    ->label('Correo')
+                    ->toggleable(isToggledHiddenByDefault: true), // Oculto por defecto
+                
+                TextColumn::make('forma_ingreso')
+                    ->label('Forma de ingreso')
+                    ->badge()
+                    ->toggleable(isToggledHiddenByDefault: true), // Oculto por defecto
+                
+                TextColumn::make('origen')
+                    ->label('Origen')
+                    ->badge()
+                    ->toggleable(isToggledHiddenByDefault: true), // Oculto por defecto
+                
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                
                 TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()

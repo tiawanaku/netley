@@ -14,7 +14,7 @@ class Cliente extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'nombres',
+        'nombres',          // ← Nota: es 'nombres' (plural)
         'apellido_paterno',
         'apellido_materno',
         'ci',
@@ -27,7 +27,7 @@ class Cliente extends Model
         'ciudad',
         'telefono',
         'whatsapp',
-        'correo',
+        'correo',           // ← La migración muestra 'correo'
         'numero_contrato',
         'estado',
         'foto',

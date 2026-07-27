@@ -45,6 +45,8 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
+            // Configuración para colapsar la barra lateral
+            ->sidebarCollapsibleOnDesktop() // Esto permite colapsar/expandir la barra lateral en desktop
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
