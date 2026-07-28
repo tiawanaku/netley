@@ -2,12 +2,17 @@
 
 namespace App\Filament\Resources\Citas\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 
 class CitaForm
 {
@@ -27,8 +32,12 @@ class CitaForm
      *                                             Crear Consulta: ahí la cita siempre queda ligada a la
      *                                             consulta recién creada, así que el selector de una
      *                                             consulta existente no aplica.
+     * @param  bool  $incluirAsignacion  false cuando este formulario se embebe en el wizard de Crear
+     *                                    Consulta: la cita recién creada todavía no tiene a quién
+     *                                    asignarse, eso lo hace el administrador después, editando la
+     *                                    cita ya creada.
      */
-    public static function components(bool $incluirCliente = true, bool $incluirConsultaRelacionada = true): array
+    public static function components(bool $incluirCliente = true, bool $incluirConsultaRelacionada = true, bool $incluirAsignacion = true): array
     {
         return [
             ...($incluirCliente ? [
@@ -36,17 +45,62 @@ class CitaForm
                     ->label('Cliente')
                     ->relationship('cliente', 'nombres')
                     ->searchable()
+                    ->live()
+                    ->afterStateUpdated(fn (Set $set) => $set('consulta_id', null))
                     ->required(),
             ] : []),
             ...($incluirConsultaRelacionada ? [
                 Select::make('consulta_id')
                     ->label('Consulta relacionada')
-                    ->relationship('consulta', 'nombre')
+                    ->relationship(
+                        name: 'consulta',
+                        titleAttribute: 'descripcion',
+                        modifyQueryUsing: fn (Builder $query, Get $get) => $query
+                            ->when($get('cliente_id'), fn (Builder $query, $clienteId) => $query->where('cliente_id', $clienteId))
+                            ->orderBy('created_at'),
+                    )
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->descripcion ?: "Consulta #{$record->id}")
                     ->searchable()
                     ->default(null),
             ] : []),
-            DateTimePicker::make('fecha_hora')
-                ->label('Fecha y hora')
+            DatePicker::make('cita_fecha')
+                ->label('Fecha')
+                ->required()
+                ->live()
+                ->dehydrated(false)
+                ->afterStateHydrated(function (Set $set, Get $get) {
+                    if (filled($fechaHora = $get('fecha_hora'))) {
+                        $set('cita_fecha', Carbon::parse($fechaHora)->format('Y-m-d'));
+                    }
+                })
+                ->afterStateUpdated(fn (Set $set, Get $get) => $set('fecha_hora', self::combinarFechaHora($get('cita_fecha'), $get('cita_hora')))),
+            Select::make('cita_hora')
+                ->label('Hora')
+                ->options(function (Get $get) {
+                    $opciones = self::opcionesHorario();
+
+                    // Citas ya existentes pueden tener una hora fuera del horario de atención o
+                    // que no cae en un múltiplo de 15 minutos (registradas antes de este cambio).
+                    // Se agrega su hora exacta como opción para no perder ni alterar ese dato al
+                    // editar la cita por otro motivo (p.ej. solo para asignarla a alguien).
+                    if (filled($fechaHora = $get('fecha_hora'))) {
+                        $horaExistente = Carbon::parse($fechaHora)->format('H:i');
+                        $opciones[$horaExistente] ??= Carbon::parse($fechaHora)->format('h:i a');
+                    }
+
+                    return $opciones;
+                })
+                ->required()
+                ->live()
+                ->disabled(fn (Get $get) => blank($get('cita_fecha')))
+                ->dehydrated(false)
+                ->afterStateHydrated(function (Set $set, Get $get) {
+                    if (filled($fechaHora = $get('fecha_hora'))) {
+                        $set('cita_hora', Carbon::parse($fechaHora)->format('H:i'));
+                    }
+                })
+                ->afterStateUpdated(fn (Set $set, Get $get) => $set('fecha_hora', self::combinarFechaHora($get('cita_fecha'), $get('cita_hora')))),
+            Hidden::make('fecha_hora')
                 ->required(),
             Select::make('modalidad')
                 ->options(['Presencial' => 'Presencial', 'Virtual' => 'Virtual'])
@@ -61,6 +115,14 @@ class CitaForm
                 ])
                 ->default('Pendiente')
                 ->required(),
+            ...($incluirAsignacion ? [
+                Select::make('asignado_a_user_id')
+                    ->label('Asignar a')
+                    ->helperText('El miembro del personal (abogado, psicólogo, pasante, etc.) que verá esta cita en su bandeja "Reuniones Agendadas".')
+                    ->relationship('asignadoA', 'name')
+                    ->searchable()
+                    ->default(null),
+            ] : []),
             Textarea::make('notas')
                 ->default(null)
                 ->columnSpanFull(),
@@ -93,5 +155,31 @@ class CitaForm
                         ->columnSpanFull(),
                 ]),
         ];
+    }
+
+    protected static function combinarFechaHora(?string $fecha, ?string $hora): ?string
+    {
+        if (blank($fecha) || blank($hora)) {
+            return null;
+        }
+
+        return Carbon::parse("{$fecha} {$hora}")->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * Horarios de atención: 8am a 6pm en intervalos de 15 minutos.
+     *
+     * @return array<string, string>
+     */
+    protected static function opcionesHorario(): array
+    {
+        $opciones = [];
+
+        for ($minutos = 8 * 60; $minutos <= 18 * 60; $minutos += 15) {
+            $hora = Carbon::createFromTime(0, 0)->addMinutes($minutos);
+            $opciones[$hora->format('H:i')] = $hora->format('h:i a');
+        }
+
+        return $opciones;
     }
 }

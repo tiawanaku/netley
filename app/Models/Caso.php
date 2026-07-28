@@ -50,6 +50,12 @@ class Caso extends Model
         'correos',
         'direccion',
         'observaciones',
+        // Datos del proceso (registrados desde "Reuniones Agendadas" al abrir el caso)
+        'tiempo_proceso_meses',
+        'requiere_poder',
+        'monto_iguala_profesional',
+        'monto_comision',
+        'comision_porcentaje',
     ];
 
     protected function casts(): array
@@ -57,6 +63,10 @@ class Caso extends Model
         return [
             'fecha_inicio' => 'date',
             'fecha_fin' => 'date',
+            'requiere_poder' => 'boolean',
+            'monto_iguala_profesional' => 'decimal:2',
+            'monto_comision' => 'decimal:2',
+            'comision_porcentaje' => 'decimal:2',
         ];
     }
 
@@ -128,6 +138,11 @@ class Caso extends Model
     public function solicitudesDocumento(): HasMany
     {
         return $this->hasMany(SolicitudDocumento::class);
+    }
+
+    public function cuotasPago(): HasMany
+    {
+        return $this->hasMany(CuotaPago::class)->orderBy('numero');
     }
 
     public function audiencias(): HasMany

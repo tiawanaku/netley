@@ -14,6 +14,7 @@ class Documento extends Model
         'propietario_id',
         'nombre',
         'tipo',
+        'formato',
         'archivo',
         'version',
         'tamano',

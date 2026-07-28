@@ -28,7 +28,11 @@ class ClienteForm
                         TextInput::make('apellido_materno')
                             ->label('Apellido materno'),
                         TextInput::make('ci')
-                            ->label('C.I.'),
+                            ->label('C.I.')
+                            ->unique(ignoreRecord: true)
+                            ->validationMessages([
+                                'unique' => 'Ya existe un cliente registrado con este C.I.',
+                            ]),
                         Select::make('genero')
                             ->label('Género')
                             ->options([
@@ -61,7 +65,11 @@ class ClienteForm
                         TextInput::make('correo')
                             ->label('Correo electrónico')
                             ->email()
-                            ->required(),
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->validationMessages([
+                                'unique' => 'Ya existe un cliente registrado con este correo.',
+                            ]),
                         TextInput::make('direccion')
                             ->label('Dirección')
                             ->columnSpan(2),

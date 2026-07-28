@@ -32,7 +32,7 @@ class CasoResource extends Resource
 {
     protected static ?string $model = Caso::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedScale;
 
     public static function form(Schema $schema): Schema
     {

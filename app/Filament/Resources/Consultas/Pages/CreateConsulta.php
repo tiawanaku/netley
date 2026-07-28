@@ -33,7 +33,7 @@ class CreateConsulta extends CreateRecord
                 ->schema(ConsultaForm::components()),
 
             Step::make('Cita')
-                ->schema(CitaForm::components(incluirCliente: false, incluirConsultaRelacionada: false)),
+                ->schema(CitaForm::components(incluirCliente: false, incluirConsultaRelacionada: false, incluirAsignacion: false)),
         ];
     }
 

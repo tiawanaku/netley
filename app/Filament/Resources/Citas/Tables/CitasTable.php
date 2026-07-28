@@ -18,6 +18,10 @@ class CitasTable
                 TextColumn::make('cliente.nombres')
                     ->label('Cliente')
                     ->searchable(),
+                TextColumn::make('asignadoA.name')
+                    ->label('Asignado a')
+                    ->placeholder('Sin asignar')
+                    ->searchable(),
                 TextColumn::make('fecha_hora')
                     ->label('Fecha y hora')
                     ->dateTime()
